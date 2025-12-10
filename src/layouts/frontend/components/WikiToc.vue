@@ -9,7 +9,7 @@
       <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
         <h2 class="flex items-center text-sm font-bold text-gray-700 uppercase dark:text-gray-200">
           <!-- 目录图标 -->
-          <svg class="inline icon w-4 h-4 mr-2 text-sky-500" version="1.1" viewBox="0 0 1024 1024"
+          <svg class="inline icon w-4 h-4 mr-2 text-sky-500" viewBox="0 0 1024 1024"
                xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M857.6 25.6a76.8 76.8 0 0 1 76.8 76.8v819.2a76.8 76.8 0 0 1-76.8 76.8H166.4a76.8 76.8 0 0 1-76.8-76.8V102.4a76.8 76.8 0 0 1 76.8-76.8h691.2z m-102.4 678.4H473.6l-2.2528 0.064a38.4 38.4 0 0 0 0 76.672L473.6 780.8h281.6l2.2528-0.064a38.4 38.4 0 0 0 0-76.672L755.2 704z m0-230.4H473.6l-2.2528 0.064a38.4 38.4 0 0 0 0 76.672L473.6 550.4h281.6l2.2528-0.064a38.4 38.4 0 0 0 0-76.672L755.2 473.6z m0-230.4H473.6l-2.2528 0.064a38.4 38.4 0 0 0 0 76.672L473.6 320h281.6l2.2528-0.064a38.4 38.4 0 0 0 0-76.672L755.2 243.2z"
@@ -90,7 +90,7 @@ const isDark = useDark()
 // 响应式的目录数据
 const titles = ref([])
 onMounted(() => {
-  // 通过 .artilce-content 样式来获取父级 div
+  // 通过 .article-content 样式来获取父级 div
   const container = document.querySelector('.article-content')
 
   // 使用 MutationObserver 监视 DOM 的变化
