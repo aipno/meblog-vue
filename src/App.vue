@@ -29,7 +29,7 @@ const locale = zhCn
 
 <style>
 #nprogress .bar {
-  background: #409eff!important;
+  background: #409eff !important;
 }
 
 /* 暗黑模式 body 背景色 */

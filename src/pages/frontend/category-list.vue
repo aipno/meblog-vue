@@ -2,66 +2,68 @@
   <Header></Header>
 
   <!-- 主内容区域 -->
-  <main class="container max-w-screen-xl mx-auto px-4 md:px-6 py-4">
-    <!-- grid 表格布局，分为 4 列 -->
-    <div class="grid grid-cols-4 gap-7">
-      <!-- 左边栏，占用 3 列 -->
-      <div class="col-span-4 md:col-span-3 mb-3">
-        <!-- 分类列表 -->
-        <!-- <CategoryListCard></CategoryListCard> -->
+  <main class="container max-w-screen-xl mx-auto px-4 md:px-6 py-8 min-h-[80vh]">
+    <!-- grid 表格布局，分为 12 列 -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+      <!-- 左边栏，占用 9 列 -->
+      <div class="col-span-1 lg:col-span-9 space-y-6">
+        <!-- 分类列表容器 -->
         <div
-          class="w-full p-5 pb-7 mb-3 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+            class="w-full p-8 bg-white border border-gray-100 rounded-2xl shadow-sm dark:bg-gray-800 dark:border-gray-700 animate__animated animate__fadeInLeft">
+
           <!-- 分类标题 -->
-          <h2 class="flex items-center mb-5 font-bold text-gray-900 uppercase dark:text-white">
-            <!-- 文件夹图标 -->
-            <svg t="1698998570037" class="inline icon w-5 h-5 mr-2" viewBox="0 0 1024 1024" version="1.1"
-              xmlns="http://www.w3.org/2000/svg" p-id="21572" width="200" height="200">
-              <path
-                d="M938.666667 464.592593h-853.333334v-265.481482c0-62.577778 51.2-113.777778 113.777778-113.777778h128.948148c15.17037 0 28.444444 3.792593 41.718519 11.377778l98.607407 64.474074h356.503704c62.577778 0 113.777778 51.2 113.777778 113.777778v189.62963z"
-                fill="#3A69DD" p-id="21573"></path>
-              <path
-                d="M805.925926 398.222222h-587.851852v-125.155555c0-24.651852 20.859259-45.511111 45.511111-45.511111h496.82963c24.651852 0 45.511111 20.859259 45.511111 45.511111V398.222222z"
-                fill="#D9E3FF" p-id="21574"></path>
-              <path
-                d="M843.851852 417.185185h-663.703704v-98.607407c0-28.444444 22.755556-53.096296 53.096296-53.096297h559.407408c28.444444 0 53.096296 22.755556 53.096296 53.096297V417.185185z"
-                fill="#FFFFFF" p-id="21575"></path>
-              <path
-                d="M786.962963 938.666667h-549.925926c-83.437037 0-151.703704-68.266667-151.703704-151.703704V341.333333s316.681481 37.925926 430.45926 37.925926c189.62963 0 422.874074-37.925926 422.874074-37.925926v445.62963c0 83.437037-68.266667 151.703704-151.703704 151.703704z"
-                fill="#5F7CF9" p-id="21576"></path>
-              <path
-                d="M559.407407 512h-75.851851c-20.859259 0-37.925926-17.066667-37.925926-37.925926s17.066667-37.925926 37.925926-37.925926h75.851851c20.859259 0 37.925926 17.066667 37.925926 37.925926s-17.066667 37.925926-37.925926 37.925926z"
-                fill="#F9D523" p-id="21577"></path>
-            </svg>
-            分类
-            <span v-if="categories && categories.length > 0" class="ml-2 text-gray-600 font-normal dark:text-gray-300">(
-              {{ categories.length }} )</span>
+          <h2 class="flex items-center mb-6 text-xl font-bold text-gray-800 dark:text-white">
+            <span class="p-2 mr-3 rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
+               <!-- 文件夹图标 -->
+               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path
+                   d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                   stroke-linecap="round"
+                   stroke-linejoin="round"
+                   stroke-width="2"/></svg>
+            </span>
+            全部分类
+            <span
+                class="ml-3 text-sm font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md">
+              共 {{ categories.length }} 个
+            </span>
           </h2>
-          <!-- 分类列表 -->
-          <div
-            class="text-sm flex flex-wrap gap-3 font-medium text-gray-600 rounded-lg dark:border-gray-600 dark:text-white">
-            <a @click="goCategoryArticleListPage(category.id, category.name)" v-for="(category, index) in categories"
-              :key="index"
-              class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium text-center border rounded-lg
-            hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-300
-            dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-800 dark:border-gray-700 dark:hover:text-white">
-              {{ category.name }}
-              <span
-                class="inline-flex items-center justify-center w-4 h-4 ms-2 text-xs font-semibold text-sky-800 bg-sky-200 rounded-full">
-                {{ category.articlesTotal }}
+
+          <!-- 分类列表 (Flex 布局) -->
+          <div class="flex flex-wrap gap-4">
+            <a v-for="(category, index) in categories" :key="index"
+               class="group relative inline-flex items-center px-5 py-2.5 text-base font-medium rounded-full cursor-pointer transition-all duration-300 border select-none
+                      bg-white text-gray-600 border-gray-200
+                      hover:border-sky-300 hover:text-sky-600 hover:bg-sky-50 hover:shadow-md hover:-translate-y-0.5
+                      dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+               @click="goCategoryArticleListPage(category.id, category.name)">
+
+              <span>{{ category.name }}</span>
+
+              <!-- 文章数徽章 -->
+              <span class="ml-3 text-xs opacity-80 bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full transition-colors
+                           group-hover:bg-sky-200 group-hover:text-sky-700
+                           dark:bg-gray-600 dark:text-gray-400 dark:group-hover:bg-sky-900 dark:group-hover:text-sky-300">
+                  {{ category.articlesTotal }}
               </span>
             </a>
+          </div>
+
+          <!-- 空状态 -->
+          <div v-if="!categories || categories.length === 0" class="py-10 text-center text-gray-400">
+            暂无分类数据
           </div>
         </div>
       </div>
 
-      <!-- 右边侧边栏，占用一列 -->
-      <aside class="col-span-4 md:col-span-1">
-        <div class="sticky top-[5.5rem]">
+      <!-- 右边侧边栏，占用 3 列 -->
+      <aside class="col-span-1 lg:col-span-3 space-y-6">
+        <div class="sticky top-[5.5rem] space-y-6">
           <!-- 博主信息 -->
-          <UserInfoCard></UserInfoCard>
+          <UserInfoCard class="animate__animated animate__fadeInRight"/>
 
-          <!-- 标签 -->
-          <TagListCard></TagListCard>
+          <!-- 标签 (虽然这是分类页，但展示标签云也是合理的导航补充) -->
+          <TagListCard class="animate__animated animate__fadeInRight animate__delay-200ms"/>
         </div>
       </aside>
     </div>
@@ -79,18 +81,17 @@ import Header from '@/layouts/frontend/components/Header.vue'
 import Footer from '@/layouts/frontend/components/Footer.vue'
 import UserInfoCard from '@/layouts/frontend/components/UserInfoCard.vue'
 import TagListCard from '@/layouts/frontend/components/TagListCard.vue'
-import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
-import { getCategoryList } from '@/api/frontend/category'
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import {getCategoryList} from '@/api/frontend/category'
+import {ref} from 'vue'
+import {useRouter} from 'vue-router'
 
 const router = useRouter()
 
 // 跳转分类文章列表页
 const goCategoryArticleListPage = (id, name) => {
   // 跳转时通过 query 携带参数（分类 ID、分类名称）
-  router.push({ path: '/category/article/list', query: { id, name } })
+  router.push({path: '/category/article/list', query: {id, name}})
 }
 
 // 所有分类
@@ -101,3 +102,7 @@ getCategoryList({}).then((res) => {
   }
 })
 </script>
+
+<style scoped>
+/* 可以在这里补充一些特定的过渡效果样式 */
+</style>

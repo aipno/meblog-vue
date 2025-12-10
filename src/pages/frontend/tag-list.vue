@@ -2,63 +2,68 @@
   <Header></Header>
 
   <!-- 主内容区域 -->
-  <main class="container max-w-screen-xl mx-auto px-4 md:px-6 py-4">
-    <!-- grid 表格布局，分为 4 列 -->
-    <div class="grid grid-cols-4 gap-7">
-      <!-- 左边栏，占用 3 列 -->
-      <div class="col-span-4 md:col-span-3 mb-3">
-        <!-- 标签 -->
-        <div v-if="tags && tags.length > 0"
-          class="w-full p-5 pb-7 mb-3 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
-          <!-- 标签标题 -->
-          <h2 class="flex items-center mb-5 font-bold text-gray-900 uppercase dark:text-white">
-            <!-- 标签图标 -->
-            <svg t="1698980289658" class="icon w-4 h-4 mr-2" viewBox="0 0 1024 1024" version="1.1"
-              xmlns="http://www.w3.org/2000/svg" p-id="13858" width="200" height="200">
-              <path
-                d="M646.4512 627.5584m-298.1888 0a298.1888 298.1888 0 1 0 596.3776 0 298.1888 298.1888 0 1 0-596.3776 0Z"
-                fill="#C7ACEF" p-id="13859"></path>
-              <path
-                d="M467.6096 962.5088c-34.4064 0-68.7616-13.1072-94.976-39.2704l-276.48-276.48c-52.3776-52.3776-52.3776-137.5744 0-189.9008L465.4592 87.552a105.216 105.216 0 0 1 76.8512-30.6176l308.6336 8.3456c55.3472 1.4848 100.096 46.0288 101.7856 101.376l9.5744 310.1696c0.8704 28.7744-10.2912 56.9344-30.6176 77.2608l-369.2032 369.2032c-26.112 26.112-60.4672 39.2192-94.8736 39.2192z m71.8848-844.1856c-11.4176 0-22.4768 4.5568-30.5664 12.6464L139.6224 500.2752c-28.416 28.416-28.416 74.6496 0 103.0144l276.48 276.48c28.416 28.416 74.6496 28.416 103.0144 0l369.2032-369.2032a43.4176 43.4176 0 0 0 12.6464-31.8976l-9.5744-310.1696c-0.7168-22.8864-19.2-41.2672-42.0352-41.8816l-308.6336-8.3456c-0.4608 0.0512-0.8192 0.0512-1.2288 0.0512z"
-                fill="#4F4F4F" p-id="13860"></path>
-              <path
-                d="M676.4032 445.5424c-62.208 0-112.8448-50.6368-112.8448-112.8448s50.6368-112.8448 112.8448-112.8448c62.208 0 112.8448 50.6368 112.8448 112.8448s-50.6368 112.8448-112.8448 112.8448z m0-164.1984c-28.3648 0-51.4048 23.04-51.4048 51.4048s23.04 51.4048 51.4048 51.4048c28.3648 0 51.4048-23.04 51.4048-51.4048s-23.0912-51.4048-51.4048-51.4048z"
-                fill="#4F4F4F" p-id="13861"></path>
-            </svg>
-            标签
-            <span class="ml-2 text-gray-600 font-normal dark:text-gray-300">( {{ tags.length }} )</span>
-          </h2>
-          <!-- 标签列表 -->
-          <!-- <span v-for="(tag, index) in tags" :key="index" @click="goTagArticleListPage(tag.id, tag.name)"
-              class="inline-block mb-1 cursor-pointer bg-green-100 text-green-800 text-xs font-medium mr-2 px-3 py-1
-              rounded-full hover:bg-green-200 hover:text-green-900 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-950">
-              {{ tag.name }}
-          </span> -->
+  <main class="container max-w-screen-xl mx-auto px-4 md:px-6 py-8 min-h-[80vh]">
+    <!-- grid 表格布局，分为 12 列 -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-          <div class="flex flex-wrap gap-3">
-            <a v-for="(tag, index) in tags" :key="index" @click="goTagArticleListPage(tag.id, tag.name)" class="cursor-pointer inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-center border rounded-[12px]
-            hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-300
-            dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-800
-            dark:border-gray-700 dark:hover:text-white">
-              {{ tag.name }}
-              <span
-                class="inline-flex items-center justify-center w-4 h-4 ms-2 text-xs font-semibold text-sky-800 bg-sky-200 rounded-full">
-                {{ tag.articlesTotal }}
+      <!-- 左边栏，占用 9 列 -->
+      <div class="col-span-1 lg:col-span-9 space-y-6">
+        <!-- 标签列表容器 -->
+        <div
+            class="w-full p-8 bg-white border border-gray-100 rounded-2xl shadow-sm dark:bg-gray-800 dark:border-gray-700 animate__animated animate__fadeInLeft">
+
+          <!-- 标签标题 -->
+          <h2 class="flex items-center mb-6 text-xl font-bold text-gray-800 dark:text-white">
+            <span class="p-2 mr-3 rounded-lg bg-pink-50 text-pink-600 dark:bg-pink-900/30 dark:text-pink-400">
+               <!-- 标签图标 -->
+               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path
+                   d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                   stroke-linecap="round"
+                   stroke-linejoin="round"
+                   stroke-width="2"/></svg>
+            </span>
+            全部标签
+            <span
+                class="ml-3 text-sm font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md">
+              共 {{ tags.length }} 个
+            </span>
+          </h2>
+
+          <!-- 标签列表 (Flex 布局) -->
+          <div class="flex flex-wrap gap-4">
+            <a v-for="(tag, index) in tags" :key="index"
+               class="group relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-full cursor-pointer transition-all duration-300 border select-none
+                      bg-white text-gray-600 border-gray-200
+                      hover:border-pink-300 hover:text-pink-600 hover:bg-pink-50 hover:shadow-md hover:-translate-y-0.5
+                      dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+               @click="goTagArticleListPage(tag.id, tag.name)">
+
+              <span># {{ tag.name }}</span>
+
+              <!-- 文章数徽章 -->
+              <span class="ml-2 text-xs opacity-80 bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full transition-colors
+                           group-hover:bg-pink-200 group-hover:text-pink-700
+                           dark:bg-gray-600 dark:text-gray-400 dark:group-hover:bg-pink-900 dark:group-hover:text-pink-300">
+                  {{ tag.articlesTotal }}
               </span>
             </a>
           </div>
 
+          <!-- 空状态 -->
+          <div v-if="!tags || tags.length === 0" class="py-10 text-center text-gray-400">
+            暂无标签数据
+          </div>
         </div>
       </div>
 
-      <!-- 右边侧边栏，占用一列 -->
-      <aside class="col-span-4 md:col-span-1">
-        <div class="sticky top-[5.5rem]">
+      <!-- 右边侧边栏，占用 3 列 -->
+      <aside class="col-span-1 lg:col-span-3 space-y-6">
+        <div class="sticky top-[5.5rem] space-y-6">
           <!-- 博主信息 -->
-          <UserInfoCard></UserInfoCard>
+          <UserInfoCard class="animate__animated animate__fadeInRight"/>
 
-          <!-- 分类 -->
-          <CategoryListCard></CategoryListCard>
+          <!-- 分类 (作为补充导航) -->
+          <CategoryListCard class="animate__animated animate__fadeInRight animate__delay-200ms"/>
         </div>
       </aside>
     </div>
@@ -77,11 +82,17 @@ import Footer from '@/layouts/frontend/components/Footer.vue'
 import UserInfoCard from '@/layouts/frontend/components/UserInfoCard.vue'
 import CategoryListCard from '@/layouts/frontend/components/CategoryListCard.vue'
 import ScrollToTopButton from '@/layouts/frontend/components/ScrollToTopButton.vue'
-import { getTagList } from '@/api/frontend/tag'
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import {getTagList} from '@/api/frontend/tag'
+import {ref} from 'vue'
+import {useRouter} from 'vue-router'
 
 const router = useRouter()
+
+// 跳转标签文章列表页
+const goTagArticleListPage = (id, name) => {
+  // 跳转时通过 query 携带参数（标签 ID、标签名称）
+  router.push({path: '/tag/article/list', query: {id, name}})
+}
 
 // 所有标签
 const tags = ref([])
@@ -90,10 +101,8 @@ getTagList({}).then((res) => {
     tags.value = res.data
   }
 })
-
-// 跳转标签文章列表页
-const goTagArticleListPage = (id, name) => {
-  // 跳转时通过 query 携带参数（标签 ID、标签名称）
-  router.push({ path: '/tag/article/list', query: { id, name } })
-}
 </script>
+
+<style scoped>
+/* 可以在这里补充一些特定的过渡效果样式 */
+</style>
