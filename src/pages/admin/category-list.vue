@@ -1,79 +1,131 @@
 <template>
-  <div>
-    <!-- 表头分页查询条件， shadow="never" 指定 card 卡片组件没有阴影 -->
-    <el-card class="mb-5" shadow="never">
-      <!-- flex 布局，内容垂直居中 -->
-      <div class="flex items-center">
-        <el-text>分类名称</el-text>
-        <div class="ml-3 w-52 mr-5">
-          <el-input v-model="searchCategoryName" placeholder="请输入（模糊查询）" />
+  <div class="p-6">
+    <!-- 顶部操作栏 -->
+    <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+      <!-- 左侧搜索区 -->
+      <div class="flex items-center gap-3 flex-wrap">
+        <div class="w-64">
+          <el-input
+              v-model="searchCategoryName"
+              clearable
+              placeholder="请输入分类名称"
+              prefix-icon="Search"
+              @keyup.enter="getTableData"
+          />
         </div>
 
-        <el-text>创建日期</el-text>
-        <div class="ml-3 w-30 mr-5">
-          <!-- 日期选择组件（区间选择） -->
-          <el-date-picker v-model="pickDate" :shortcuts="shortcuts" end-placeholder="结束时间" range-separator="至"
-            size="default" start-placeholder="开始时间" style="top: 3px" type="daterange" @change="datepickerChange" />
+        <div class="w-80">
+          <el-date-picker
+              v-model="pickDate"
+              :shortcuts="shortcuts"
+              end-placeholder="结束时间"
+              range-separator="-"
+              start-placeholder="开始时间"
+              type="daterange"
+              value-format="YYYY-MM-DD"
+              @change="datepickerChange"
+          />
         </div>
 
-        <el-button :icon="Search" class="ml-3" type="primary" @click="getTableData">查询</el-button>
-        <el-button :icon="RefreshRight" class="ml-3" @click="reset">重置</el-button>
-      </div>
-    </el-card>
-
-    <el-card shadow="never">
-      <!-- 新增按钮 -->
-      <div class="mb-5">
-        <el-button type="primary" @click="addCategoryBtnClick">
-          <el-icon class="mr-1">
-            <Plus />
-          </el-icon>
-          新增
-        </el-button>
+        <el-button icon="Search" plain type="primary" @click="getTableData">搜索</el-button>
+        <el-button icon="RefreshRight" @click="reset">重置</el-button>
       </div>
 
-      <!-- 分页列表 -->
-      <el-table v-loading="tableLoading" :data="tableData" border stripe style="width: 100%">
-        <el-table-column label="分类名称" prop="name" width="180" />
-        <el-table-column label="文章数" prop="articlesTotal" width="100" />
-        <el-table-column label="创建时间" prop="createTime" width="180" />
-        <el-table-column label="操作">
+      <!-- 右侧操作区 -->
+      <div>
+        <el-button icon="Plus" type="primary" @click="addCategoryBtnClick">新增分类</el-button>
+      </div>
+    </div>
+
+    <!-- 表格区域 -->
+    <el-card class="border-0 !bg-white !rounded-xl table-wrapper" shadow="never">
+      <el-table
+          v-loading="tableLoading"
+          :data="tableData"
+          :header-cell-style="{ background: '#f8fafc', color: '#64748b', fontWeight: '600' }"
+          highlight-current-row
+          style="width: 100%"
+      >
+        <el-table-column label="分类名称" min-width="180" prop="name">
           <template #default="scope">
-            <el-button size="small" type="danger" @click="deleteCategorySubmit(scope.row)">
-              <el-icon class="mr-1">
-                <Delete />
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
+                <el-icon>
+                  <Folder/>
+                </el-icon>
+              </div>
+              <span class="font-medium text-gray-700">{{ scope.row.name }}</span>
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="文章数" prop="articlesTotal" sortable width="120">
+          <template #default="scope">
+            <el-tag effect="plain" round type="info">{{ scope.row.articlesTotal || 0 }} 篇</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="创建时间" prop="createTime" sortable width="180">
+          <template #default="scope">
+            <div class="flex items-center gap-1 text-gray-500 text-sm">
+              <el-icon>
+                <Clock/>
               </el-icon>
-              删除
-            </el-button>
+              <span>{{ scope.row.createTime }}</span>
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column fixed="right" label="操作" width="120">
+          <template #default="scope">
+            <el-popconfirm title="确定删除该分类吗？关联的文章将失去该分类。" @confirm="deleteCategorySubmit(scope.row)">
+              <template #reference>
+                <el-button icon="Delete" link type="danger">删除</el-button>
+              </template>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
 
-
+      <!-- 分页 -->
+      <div class="mt-6 flex justify-end">
+        <el-pagination
+            v-model:current-page="current"
+            v-model:page-size="size"
+            :page-sizes="[10, 20, 50]"
+            :total="total"
+            background
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="getTableData"
+        />
+      </div>
     </el-card>
 
-    <!-- 分页 -->
-    <div class="mt-10 flex justify-center">
-      <el-pagination v-model:current-page="current" v-model:page-size="size" :background="true"
-        :page-sizes="[10, 20, 50]" :small="false" :total="total" layout="total, sizes, prev, pager, next, jumper" />
-    </div>
+    <!-- 添加分类弹窗 -->
+    <FormDialog ref="formDialogRef" destroyOnClose title="添加文章分类" width="400px" @submit="onSubmit">
+      <el-form ref="formRef" :model="form" :rules="rules" label-position="top" size="large">
+        <el-form-item label="分类名称" prop="name">
+          <el-input
+              v-model="form.name"
+              clearable
+              maxlength="20"
+              placeholder="例如：后端技术、生活随笔..."
+              prefix-icon="Folder"
+              show-word-limit
+          />
+        </el-form-item>
+      </el-form>
+    </FormDialog>
   </div>
-  <FormDialog ref="formDialogRef" destroyOnClose title="添加文章分类" @submit="onSubmit">
-    <el-form ref="formRef" :model="form" :rules="rules">
-      <el-form-item label="分类名称" label-width="80px" prop="name" size="large">
-        <el-input v-model="form.name" clearable maxlength="20" placeholder="请输入分类名称" show-word-limit />
-      </el-form-item>
-    </el-form>
-  </FormDialog>
 </template>
 
 <script setup>
-// 引入所需图标
-import { Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
-import { addCategory, deleteCategory, getCategoryPageList } from '@/api/admin/category'
-import { reactive, ref } from 'vue';
+import {Clock, Folder} from '@element-plus/icons-vue'
+import {addCategory, deleteCategory, getCategoryPageList} from '@/api/admin/category'
+import {reactive, ref} from 'vue';
 import moment from "moment";
-import { showMessage, showModel } from '@/composables/utils'
+import {showMessage} from '@/composables/utils'
 import FormDialog from "@/components/FormDialog.vue"
 
 // 分页查询的分类名称
@@ -87,10 +139,13 @@ const endDate = reactive({})
 
 // 监听日期组件改变事件，并将开始结束时间设置到变量中
 const datepickerChange = (e) => {
-  startDate.value = moment(e[0]).format('YYYY-MM-DD')
-  endDate.value = moment(e[1]).format('YYYY-MM-DD')
-
-  console.log('开始时间：' + startDate.value + ', 结束时间：' + endDate.value)
+  if (e) {
+    startDate.value = moment(e[0]).format('YYYY-MM-DD')
+    endDate.value = moment(e[1]).format('YYYY-MM-DD')
+  } else {
+    startDate.value = null
+    endDate.value = null
+  }
 }
 
 // 表格加载 Loading
@@ -116,6 +171,7 @@ const reset = () => {
   pickDate.value = ''
   startDate.value = null
   endDate.value = null
+  getTableData()
 }
 
 // 获取分页数据
@@ -131,18 +187,18 @@ function getTableData() {
     endDate: endDate.value,
     name: searchCategoryName.value
   })
-    .then((res) => {
-      if (res.success === true) {
-        tableData.value = res.data
-        current.value = res.current
-        size.value = res.size
-        total.value = res.total
-      }
-    })
-    .finally(() => {
-      // 隐藏表格 loading
-      tableLoading.value = false
-    })
+      .then((res) => {
+        if (res.success === true) {
+          tableData.value = res.data
+          current.value = res.current
+          size.value = res.size
+          total.value = res.total
+        }
+      })
+      .finally(() => {
+        // 隐藏表格 loading
+        tableLoading.value = false
+      })
 }
 
 getTableData()
@@ -201,7 +257,7 @@ const rules = {
       message: '分类名称不能为空',
       trigger: 'blur',
     },
-    { min: 1, max: 20, message: '分类名称字数要求大于 1 个字符，小于 20 个字符', trigger: 'blur' },
+    {min: 1, max: 20, message: '分类名称字数要求大于 1 个字符，小于 20 个字符', trigger: 'blur'},
   ]
 }
 
@@ -209,10 +265,10 @@ const onSubmit = () => {
   // 先验证 form 表单字段
   formRef.value.validate((valid) => {
     if (!valid) {
-      console.log('表单验证不通过')
       return false
     }
 
+    formDialogRef.value.showBtnLoading()
     addCategory(form).then((res) => {
       if (res.success === true) {
         showMessage('添加成功')
@@ -233,22 +289,24 @@ const onSubmit = () => {
 }
 
 const deleteCategorySubmit = (row) => {
-  console.log(row.id)
-  showModel('是否确定要删除该分类？').then(() => {
-    deleteCategory(row.id).then((res) => {
-      if (res.success === true) {
-        showMessage('删除成功')
-        // 重新请求分页接口，渲染数据
-        getTableData()
-      } else {
-        // 获取服务端返回的错误消息
-        let message = res.message
-        // 提示错误消息
-        showMessage(message, 'error')
-      }
-    })
-  }).catch(() => {
-    console.log('取消了')
+  deleteCategory(row.id).then((res) => {
+    if (res.success === true) {
+      showMessage('删除成功')
+      // 重新请求分页接口，渲染数据
+      getTableData()
+    } else {
+      // 获取服务端返回的错误消息
+      let message = res.message
+      // 提示错误消息
+      showMessage(message, 'error')
+    }
   })
 }
 </script>
+
+<style scoped>
+/* 覆盖表格悬停样式，使其更柔和 */
+:deep(.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell) {
+  background-color: #f8fafc;
+}
+</style>

@@ -1,234 +1,209 @@
 <template>
-  <div class='grid grid-cols-2 h-screen'>
-    <div class='col-span-2 order-2 md:col-span-1 md:order-1 bg-black'>
-      <div class='flex justify-center items-center h-full'>
-        <!-- 默认占两列，order 用于指定排列顺序，md 用于适配非移动端（PC 端） -->
-        <div class='col-span-2 order-2 p-10 md:col-span-1 md:order-1 bg-slate-1000'>
-          <!-- 指定为 flex 布局，并设置为屏幕垂直水平居中，高度为 100% -->
-          <div
-            class='flex justify-center items-center h-full flex-col animate__animated animate__bounceInLeft animate__fast'>
-            <h2 class='font-bold text-4xl mb-7 text-white'>Meblog 博客登录</h2>
-            <p class='text-white'>
-              一款由 Spring Boot + Mybaits Plus + Vue 3.2 + Vite 4
-              开发的前后端分离博客。
-            </p>
-            <!-- 指定图片宽度为父级元素的 1/2 -->
-            <img alt="#" class='w-1/2' src='@/assets/image/安全.png' />
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+
+    <!-- 登录容器 -->
+    <div
+        class="flex w-full max-w-5xl h-full md:h-[600px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden m-4 transition-colors duration-300">
+
+      <!-- 左侧：品牌展示区 (仅在大屏显示) -->
+      <div
+          class="hidden md:flex md:w-1/2 bg-gradient-to-br from-sky-500 to-indigo-600 relative items-center justify-center p-12 overflow-hidden">
+        <!-- 背景装饰圆 -->
+        <div
+            class="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
+        <div
+            class="absolute bottom-0 right-0 w-80 h-80 bg-white/10 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl"></div>
+
+        <div class="relative z-10 text-center text-white">
+          <h2 class="text-4xl font-extrabold mb-4 tracking-tight animate__animated animate__fadeInDown">MeBlog
+            Admin</h2>
+          <p class="text-sky-100 text-lg mb-8 animate__animated animate__fadeInUp animate__delay-1s">
+            一款由 Spring Boot + Mybaits Plus + Vue 3.2 + Vite 4 开发的前后端分离博客。
+          </p>
+          <!-- 插画/图片 -->
+          <div class="relative w-64 h-64 mx-auto animate__animated animate__zoomIn animate__delay-1s">
+            <!-- 使用更通用的安全图标替代原图，或者保留原图 -->
+            <img alt="Login Illustration"
+                 class="w-full h-full object-contain drop-shadow-lg transform hover:scale-105 transition-transform duration-500"
+                 src="@/assets/image/安全.png"/>
           </div>
         </div>
       </div>
-    </div>
-    <div class="flex flex-col col-span-2 order-1 md:col-span-1 md:order-2 bg-white dark:bg-gray-800">
-      <!-- 白天黑夜开关，ml-auto 靠右显示 -->
-      <label class="switch ml-auto mt-4 mr-4">
-        <input v-model="isLight" type="checkbox" @click="toggleDark()">
-        <span class="slider"></span>
-      </label>
-      <!-- flex-col 用于指定子元素垂直排列 -->
-      <div
-        class='flex justify-center items-center h-full flex-col animate__animated animate__bounceInRight animate__fast'>
-        <!-- 大标题，设置字体粗细、大小、下边距 -->
-        <h1 class="font-bold text-4xl mb-5 dark:text-white">欢迎回来</h1>
-        <!-- 设置 flex 布局，内容垂直水平居中，文字颜色，以及子内容水平方向 x 轴间距 -->
-        <div class="flex items-center justify-center mb-7 text-gray-400 space-x-2 dark:text-gray-500">
-          <!-- 左边横线，高度为 1px, 宽度为 16，背景色设置 -->
-          <span class="h-[1px] w-16 bg-gray-200 dark:bg-gray-700"></span>
-          <span>账号密码登录</span>
-          <!-- 右边横线 -->
-          <span class="h-[1px] w-16 bg-gray-200 dark:bg-gray-700"></span>
-        </div>
-        <!-- 引入 Element Plus 表单组件，移动端设置宽度为 5/6，PC 端设置为 2/5 -->
 
-        <el-form ref='formRef' :model='form' :rules='rules' class='w-5/6 md:w-2/5'>
-          <el-form-item prop='username'>
-            <!-- 输入框组件 -->
-            <el-input v-model='form.username' :prefix-icon='User' clearable placeholder='请输入用户名' size='large' />
-          </el-form-item>
-          <el-form-item prop='password'>
-            <!-- 密码框组件 -->
-            <el-input v-model='form.password' :prefix-icon='Lock' clearable placeholder='请输入密码' show-password
-              size='large' type='password' />
-          </el-form-item>
-          <el-form-item>
-            <!-- 登录按钮，宽度设置为 100% -->
-            <el-button class='w-full mt-2' size='large' type='primary' @click='onSubmit'>登录</el-button>
-          </el-form-item>
-        </el-form>
-        <p>还没有账号？点击  <router-link class="text-blue-400" to="/register">注册账号</router-link></p>
+      <!-- 右侧：登录表单区 -->
+      <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center relative">
+
+        <!-- 顶部操作栏 (暗黑模式切换) -->
+        <div class="absolute top-6 right-6">
+          <button
+              class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors focus:outline-none"
+              title="切换主题"
+              @click="toggleDark()"
+          >
+            <svg v-if="!isDark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                  stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"/>
+            </svg>
+            <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="2"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="max-w-md mx-auto w-full">
+          <div class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">欢迎回来 👋</h1>
+            <p class="text-gray-500 dark:text-gray-400">请输入您的账号密码进行登录</p>
+          </div>
+
+          <el-form ref="formRef" :model="form" :rules="rules" class="space-y-6" size="large" @submit.prevent>
+            <el-form-item prop="username">
+              <el-input
+                  v-model="form.username"
+                  :prefix-icon="User"
+                  class="h-12 text-base"
+                  placeholder="用户名"
+              />
+            </el-form-item>
+
+            <el-form-item prop="password">
+              <el-input
+                  v-model="form.password"
+                  :prefix-icon="Lock"
+                  class="h-12 text-base"
+                  placeholder="密码"
+                  show-password
+                  type="password"
+              />
+            </el-form-item>
+
+            <div class="flex items-center justify-between text-sm">
+              <el-checkbox class="!mr-0" label="记住我"/>
+              <a class="text-sky-600 hover:text-sky-500 font-medium transition-colors" href="#">忘记密码?</a>
+            </div>
+
+            <el-button
+                :loading="loading"
+                class="w-full h-12 text-base font-semibold tracking-wide bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 border-none transition-all duration-300 shadow-lg hover:shadow-sky-500/30"
+                type="primary"
+                @click="onSubmit"
+            >
+              登 录
+            </el-button>
+          </el-form>
+
+          <p class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
+            还没有账号？
+            <router-link class="text-sky-600 hover:text-sky-500 font-medium hover:underline transition-colors"
+                         to="/register">
+              立即注册
+            </router-link>
+          </p>
+        </div>
       </div>
     </div>
+
   </div>
 </template>
 
 <script setup>
-// 引入 Element Plus 中的用户、锁图标
-import 'element-plus/es/components/message/style/css'
-import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
-import { login } from '@/api/admin/user.js';
-import { useRouter } from 'vue-router';
-import { showMessage } from '@/composables/utils.js';
-import { setToken } from "@/composables/cookie.js";
-import { useUserStore } from '@/stores/user'
-import { useDark, useToggle } from '@vueuse/core'
-// 导入 element-plus 暗黑 css
+import {onBeforeUnmount, onMounted, reactive, ref} from 'vue';
+import {Lock, User} from '@element-plus/icons-vue' // 导入图标
+import {login} from '@/api/admin/user.js';
+import {useRouter} from 'vue-router';
+import {showMessage} from '@/composables/utils.js';
+import {setToken} from "@/composables/cookie.js";
+import {useUserStore} from '@/stores/user'
+import {useDark, useToggle} from '@vueuse/core'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 
-// 路由引用
 const router = useRouter();
-
-// 表单引用
 const formRef = ref(null);
-
-// 登录按钮加载
 const loading = ref(false);
-
-// 引入用户状态管理
 const userStore = useUserStore()
 
-// 是否是白天
-const isLight = ref(true)
-const isDark = useDark({
-  onChanged(dark) {
-    // update the dom, call the API or something
-    console.log('onchange:' + dark)
-    if (dark) {
-      // 给 body 添加 class="dark"
-      document.documentElement.classList.add('dark');
-      // 设置 switch 的值
-      isLight.value = false
-    } else {
-      // 移除 body 中添加 class="dark"
-      document.documentElement.classList.remove('dark');
-      isLight.value = true
-    }
-  },
-})
+// 暗黑模式控制
+const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
-// 表单验证规则
 const rules = {
-  username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-  password: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
+  username: [{required: true, message: '用户名不能为空', trigger: 'blur'}],
+  password: [{required: true, message: '密码不能为空', trigger: 'blur'}],
 };
 
-// 按下回车键后，执行登陆事件
 function onKeyUp(e) {
   if (e.key === 'Enter') {
     onSubmit()
   }
 }
 
-// 添加键盘监听
 onMounted(() => {
-  console.log('添加键盘监听')
   document.addEventListener('keyup', onKeyUp)
 })
 
-// 移除键盘监听
 onBeforeUnmount(() => {
   document.removeEventListener('keyup', onKeyUp)
 })
 
-
-// 定义响应式的表单对象
 const form = reactive({
   username: '',
   password: '',
 });
 
-// 登录
 const onSubmit = () => {
-  console.log('登录');
-  // 先验证form表单字段
   formRef.value.validate((valid) => {
-    if (!valid) {
-      console.log('表单验证不通过');
-      return false
-    }
+    if (!valid) return false
 
-    // 开始加载
     loading.value = true;
-    // 调用登录接口
     login(form.username, form.password).then((res) => {
-      // 判断是否成功
       if (res.success === true) {
-        // 提示登录成功
         showMessage('登录成功')
-
-        // 存储 Token 到 Cookie 中
-        let token = res.data.token
-        setToken(token)
-
-        // 获取用户信息，并存储到全局状态中
+        setToken(res.data.token)
         userStore.setUserInfo()
-
-        // 跳转到后台首页
         router.push('/admin/index')
       } else {
-        // 获取服务端返回的错误信息
         let message = res.message;
-        // 提示消息
         showMessage(message, 'error')
       }
+    }).finally(() => {
+      loading.value = false;
     })
-      .finally(() => {
-        // 结束加载
-        loading.value = false;
-      })
   })
 }
 </script>
 
-<style>
-/* The switch - the box around the slider */
-.switch {
-  font-size: 14px;
-  position: relative;
-  display: inline-block;
-  width: 3.5em;
-  height: 2em;
+<style scoped>
+/* 深度选择器定制 Element Plus 组件样式 */
+:deep(.el-input__wrapper) {
+  background-color: #f9fafb; /* bg-gray-50 */
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow: none !important;
+  border: 1px solid #e5e7eb; /* border-gray-200 */
+  transition: all 0.3s;
 }
 
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+:deep(.el-input__wrapper.is-focus) {
+  background-color: #fff;
+  border-color: var(--el-color-primary);
+  box-shadow: 0 0 0 1px var(--el-color-primary) !important;
 }
 
-/* The slider */
-.slider {
-  --background: #28096b;
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--background);
-  transition: .5s;
-  border-radius: 30px;
+/* 暗黑模式适配 */
+.dark :deep(.el-input__wrapper) {
+  background-color: #374151; /* bg-gray-700 */
+  border-color: #4b5563; /* border-gray-600 */
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 1.4em;
-  width: 1.4em;
-  border-radius: 50%;
-  left: 10%;
-  bottom: 15%;
-  box-shadow: inset 8px -4px 0px 0px #fff000;
-  background: var(--background);
-  transition: .5s;
+.dark :deep(.el-input__inner) {
+  color: #fff;
 }
 
-input:checked+.slider {
-  background-color: #522ba7;
-}
-
-input:checked+.slider:before {
-  transform: translateX(100%);
-  box-shadow: inset 15px -4px 0px 15px #fff000;
+/* 按钮样式微调 */
+:deep(.el-button) {
+  border-radius: 0.75rem;
 }
 </style>

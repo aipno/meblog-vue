@@ -1,83 +1,147 @@
 <template>
-  <div>
-    <!-- 表头分页查询条件， shadow="never" 指定 card 卡片组件没有阴影 -->
-    <el-card class="mb-5" shadow="never">
-      <!-- flex 布局，内容垂直居中 -->
-      <div class="flex items-center">
-        <el-text>标签名称</el-text>
-        <div class="ml-3 w-52 mr-5">
-          <el-input v-model="searchTagName" placeholder="请输入（模糊查询）" />
+  <div class="p-6">
+    <!-- 顶部操作栏 -->
+    <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+      <!-- 左侧搜索区 -->
+      <div class="flex items-center gap-3 flex-wrap">
+        <div class="w-64">
+          <el-input
+              v-model="searchTagName"
+              clearable
+              placeholder="请输入标签名称"
+              prefix-icon="Search"
+              @keyup.enter="getTableData"
+          />
         </div>
 
-        <el-text>创建日期</el-text>
-        <div class="ml-3 w-30 mr-5">
-          <!-- 日期选择组件（区间选择） -->
-          <el-date-picker v-model="pickDate" :shortcuts="shortcuts" end-placeholder="结束时间" range-separator="至"
-            size="default" start-placeholder="开始时间" type="daterange" @change="datepickerChange" />
+        <div class="w-80">
+          <el-date-picker
+              v-model="pickDate"
+              :shortcuts="shortcuts"
+              end-placeholder="结束时间"
+              range-separator="-"
+              start-placeholder="开始时间"
+              type="daterange"
+              value-format="YYYY-MM-DD"
+              @change="datepickerChange"
+          />
         </div>
 
-        <el-button :icon="Search" class="ml-3" type="primary" @click="getTableData">查询</el-button>
-        <el-button :icon="RefreshRight" class="ml-3" @click="reset">重置</el-button>
-      </div>
-    </el-card>
-
-    <el-card shadow="never">
-      <!-- 新增按钮 -->
-      <div class="mb-5">
-        <el-button type="primary" @click="addCategoryBtnClick">
-          <el-icon class="mr-1">
-            <Plus />
-          </el-icon>
-          新增
-        </el-button>
+        <el-button icon="Search" plain type="primary" @click="getTableData">搜索</el-button>
+        <el-button icon="RefreshRight" @click="reset">重置</el-button>
       </div>
 
-      <!-- 分页列表 -->
-      <el-table v-loading="tableLoading" :data="tableData" border stripe style="width: 100%">
-        <el-table-column label="标签名称" prop="name" width="180">
+      <!-- 右侧操作区 -->
+      <div>
+        <el-button icon="Plus" type="primary" @click="addCategoryBtnClick">新增标签</el-button>
+      </div>
+    </div>
+
+    <!-- 表格区域 -->
+    <el-card class="border-0 !bg-white !rounded-xl table-wrapper" shadow="never">
+      <el-table
+          v-loading="tableLoading"
+          :data="tableData"
+          :header-cell-style="{ background: '#f8fafc', color: '#64748b', fontWeight: '600' }"
+          highlight-current-row
+          style="width: 100%"
+      >
+        <el-table-column label="标签名称" min-width="180" prop="name">
           <template #default="scope">
-            <el-tag class="ml-2" type="success">{{ scope.row.name }}</el-tag>
+            <el-tag class="ml-2" effect="light" round type="primary">
+              <div class="flex items-center gap-1">
+                <el-icon>
+                  <PriceTag/>
+                </el-icon>
+                <span>{{ scope.row.name }}</span>
+              </div>
+            </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="文章数" prop="articlesTotal" width="100" />
-        <el-table-column label="创建时间" prop="createTime" width="180" />
-        <el-table-column label="操作">
+
+        <el-table-column label="文章数" prop="articlesTotal" sortable width="120">
           <template #default="scope">
-            <el-button size="small" type="danger" @click="deleteTagSubmit(scope.row)">
-              <el-icon class="mr-1">
-                <Delete />
+            <el-tag effect="plain" round type="info">{{ scope.row.articlesTotal || 0 }} 篇</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="创建时间" prop="createTime" sortable width="180">
+          <template #default="scope">
+            <div class="flex items-center gap-1 text-gray-500 text-sm">
+              <el-icon>
+                <Clock/>
               </el-icon>
-              删除
-            </el-button>
+              <span>{{ scope.row.createTime }}</span>
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column fixed="right" label="操作" width="120">
+          <template #default="scope">
+            <el-popconfirm title="确定删除该标签吗？" @confirm="deleteTagSubmit(scope.row)">
+              <template #reference>
+                <el-button icon="Delete" link type="danger">删除</el-button>
+              </template>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
 
-
       <!-- 分页 -->
-      <div class="mt-10 flex justify-center">
-        <el-pagination v-model:current-page="current" v-model:page-size="size" :background="true"
-          :page-sizes="[10, 20, 50]" :small="false" :total="total" layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange" @current-change="getTableData" />
+      <div class="mt-6 flex justify-end">
+        <el-pagination
+            v-model:current-page="current"
+            v-model:page-size="size"
+            :page-sizes="[10, 20, 50]"
+            :total="total"
+            background
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="getTableData"
+        />
       </div>
-
     </el-card>
 
-    <!-- 添加标签 -->
-    <FormDialog ref="formDialogRef" destroyOnClose title="添加文章标签" @submit="onSubmit">
-      <el-form ref="formRef" :model="form">
-        <el-form-item prop="name">
-          <el-tag v-for="tag in dynamicTags" :key="tag" :disable-transitions="false" class="mx-1" closable
-            @close="handleClose(tag)">
-            {{ tag }}
-          </el-tag>
-          <span class="w-20">
-            <el-input v-if="inputVisible" ref="InputRef" v-model="inputValue" class="ml-1 w-20" size="small"
-              @blur="handleInputConfirm" @keyup.enter="handleInputConfirm" />
-            <el-button v-else class="button-new-tag ml-1" size="small" @click="showInput">
-              + 新增标签
+    <!-- 添加标签弹窗 -->
+    <FormDialog ref="formDialogRef" destroyOnClose title="添加文章标签" width="480px" @submit="onSubmit">
+      <el-form ref="formRef" :model="form" label-position="top">
+        <el-form-item label="标签名称" prop="name">
+          <div
+              class="flex items-center gap-2 flex-wrap p-3 border border-gray-200 rounded-lg min-h-[60px] bg-gray-50/50 cursor-text"
+              @click="showInput">
+            <el-tag
+                v-for="tag in dynamicTags"
+                :key="tag"
+                :disable-transitions="false"
+                class="mx-1"
+                closable
+                effect="light"
+                type="primary"
+                @close="handleClose(tag)"
+            >
+              {{ tag }}
+            </el-tag>
+            <el-input
+                v-if="inputVisible"
+                ref="InputRef"
+                v-model="inputValue"
+                class="w-24 ml-1 !h-6"
+                placeholder="输入"
+                size="small"
+                @blur="handleInputConfirm"
+                @keyup.enter="handleInputConfirm"
+            />
+            <el-button v-else class="button-new-tag ml-1 !h-6" icon="Plus" link size="small" type="primary"
+                       @click.stop="showInput">
+              新标签
             </el-button>
-          </span>
+          </div>
+          <div class="text-xs text-gray-400 mt-2 flex items-center gap-1">
+            <el-icon>
+              <InfoFilled/>
+            </el-icon>
+            <span>支持批量添加，输入标签名后按回车确认。</span>
+          </div>
         </el-form-item>
       </el-form>
     </FormDialog>
@@ -86,11 +150,11 @@
 </template>
 
 <script setup>
-import { Delete, Plus, RefreshRight, Search } from '@element-plus/icons-vue'
-import { nextTick, reactive, ref } from 'vue'
-import { addTag, deleteTag, getTagPageList } from '@/api/admin/tag'
+import {Clock, InfoFilled, PriceTag} from '@element-plus/icons-vue'
+import {nextTick, reactive, ref} from 'vue'
+import {addTag, deleteTag, getTagPageList} from '@/api/admin/tag'
 import moment from 'moment'
-import { showMessage, showModel } from '@/composables/utils'
+import {showMessage} from '@/composables/utils'
 import FormDialog from '@/components/FormDialog.vue'
 
 // 分页查询的标签名称s
@@ -104,10 +168,13 @@ const endDate = reactive({})
 
 // 监听日期组件改变事件，并将开始结束时间设置到变量中
 const datepickerChange = (e) => {
-  startDate.value = moment(e[0]).format('YYYY-MM-DD')
-  endDate.value = moment(e[1]).format('YYYY-MM-DD')
-
-  console.log('开始时间：' + startDate.value + ', 结束时间：' + endDate.value)
+  if (e) {
+    startDate.value = moment(e[0]).format('YYYY-MM-DD')
+    endDate.value = moment(e[1]).format('YYYY-MM-DD')
+  } else {
+    startDate.value = null
+    endDate.value = null
+  }
 }
 
 const shortcuts = [
@@ -165,15 +232,15 @@ function getTableData() {
     endDate: endDate.value,
     name: searchTagName.value
   })
-    .then((res) => {
-      if (res.success === true) {
-        tableData.value = res.data
-        current.value = res.current
-        size.value = res.size
-        total.value = res.total
-      }
-    })
-    .finally(() => tableLoading.value = false) // 隐藏表格 loading
+      .then((res) => {
+        if (res.success === true) {
+          tableData.value = res.data
+          current.value = res.current
+          size.value = res.size
+          total.value = res.total
+        }
+      })
+      .finally(() => tableLoading.value = false) // 隐藏表格 loading
 }
 
 getTableData()
@@ -191,6 +258,7 @@ const reset = () => {
   pickDate.value = ''
   startDate.value = null
   endDate.value = null
+  getTableData()
 }
 
 // 对话框是否显示
@@ -212,51 +280,48 @@ const form = reactive({
 
 
 const onSubmit = () => {
-  // 先验证 form 表单字段
-  formRef.value.validate((valid) => {
-    // 显示提交按钮 loading
-    formDialogRef.value.showBtnLoading()
-    form.tags = dynamicTags.value
+  // 校验是否添加了标签
+  if (dynamicTags.value.length === 0) {
+    showMessage('请至少添加一个标签', 'warning')
+    return
+  }
 
-    addTag(form).then((res) => {
-      if (res.success === true) {
-        showMessage('添加成功')
-        // 将表单中标签数组置空
-        form.tags = []
-        dynamicTags.value = []
-        // 隐藏对话框
-        formDialogRef.value.close()
-        // 重新请求分页接口，渲染数据
-        getTableData()
-      } else {
-        // 获取服务端返回的错误消息
-        let message = res.message
-        // 提示错误消息
-        showMessage(message, 'error')
-      }
-    }).finally(() => formDialogRef.value.closeBtnLoading()) // 隐藏提交按钮 loading
+  // 显示提交按钮 loading
+  formDialogRef.value.showBtnLoading()
+  form.tags = dynamicTags.value
 
-  })
+  addTag(form).then((res) => {
+    if (res.success === true) {
+      showMessage('添加成功')
+      // 将表单中标签数组置空
+      form.tags = []
+      dynamicTags.value = []
+      // 隐藏对话框
+      formDialogRef.value.close()
+      // 重新请求分页接口，渲染数据
+      getTableData()
+    } else {
+      // 获取服务端返回的错误消息
+      let message = res.message
+      // 提示错误消息
+      showMessage(message, 'error')
+    }
+  }).finally(() => formDialogRef.value.closeBtnLoading()) // 隐藏提交按钮 loading
 }
 
 // 删除标签
 const deleteTagSubmit = (row) => {
-  console.log(row)
-  showModel('是否确定要删除该标签？').then(() => {
-    deleteTag(row.id).then((res) => {
-      if (res.success === true) {
-        showMessage('删除成功')
-        // 重新请求分页接口，渲染数据
-        getTableData()
-      } else {
-        // 获取服务端返回的错误消息
-        let message = res.message
-        // 提示错误消息
-        showMessage(message, 'error')
-      }
-    })
-  }).catch(() => {
-    console.log('取消了')
+  deleteTag(row.id).then((res) => {
+    if (res.success === true) {
+      showMessage('删除成功')
+      // 重新请求分页接口，渲染数据
+      getTableData()
+    } else {
+      // 获取服务端返回的错误消息
+      let message = res.message
+      // 提示错误消息
+      showMessage(message, 'error')
+    }
   })
 }
 
@@ -276,16 +341,44 @@ const handleClose = (tag) => {
 const showInput = () => {
   inputVisible.value = true
   nextTick(() => {
-    InputRef.value.input.focus()
+    // 兼容 Element Plus 不同版本的 input 引用
+    if (InputRef.value.input) {
+      InputRef.value.input.focus()
+    } else {
+      InputRef.value.focus()
+    }
   })
 }
 
 const handleInputConfirm = () => {
   if (inputValue.value) {
-    dynamicTags.value.push(inputValue.value)
+    if (!dynamicTags.value.includes(inputValue.value)) {
+      dynamicTags.value.push(inputValue.value)
+    } else {
+      showMessage('标签已存在', 'warning')
+    }
   }
   inputVisible.value = false
   inputValue.value = ''
 }
 
 </script>
+
+<style scoped>
+/* 覆盖表格悬停样式 */
+:deep(.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell) {
+  background-color: #f8fafc;
+}
+
+/* 标签输入框样式微调 */
+:deep(.el-input__wrapper) {
+  box-shadow: none !important;
+  padding: 0;
+  background: transparent;
+}
+
+:deep(.el-input__inner) {
+  height: 24px;
+  line-height: 24px;
+}
+</style>

@@ -1,85 +1,261 @@
 <template>
-  <div>
-    <!-- 卡片组件， shadow="never" 指定 card 卡片组件没有阴影 -->
-    <el-card shadow="never">
-      <el-form ref="formRef" :model="form" :rules="rules" label-width="160px">
-        <el-form-item label="博客名称" prop="name">
-          <el-input v-model="form.name" clearable />
-        </el-form-item>
-        <el-form-item label="作者名" prop="author">
-          <el-input v-model="form.author" clearable />
-        </el-form-item>
-        <el-form-item label="博客 LOGO" prop="logo">
-          <el-upload :auto-upload="false" :on-change="handleLogoChange" :show-file-list="false" action="#"
-            class="avatar-uploader">
-            <img v-if="form.logo" :src="form.logo" class="avatar"  alt=""/>
-            <el-icon v-else class="avatar-uploader-icon">
-              <Plus />
-            </el-icon>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="作者头像" prop="avatar">
-          <el-upload :auto-upload="false" :on-change="handleAvatarChange" :show-file-list="false" action="#"
-            class="avatar-uploader">
-            <img v-if="form.avatar" :src="form.avatar" class="avatar"  alt=""/>
-            <el-icon v-else class="avatar-uploader-icon">
-              <Plus />
-            </el-icon>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="介绍语" prop="introduction">
-          <el-input v-model="form.introduction" type="textarea" />
-        </el-form-item>
-        <!-- 开启 Github 访问 -->
-        <el-form-item label="开启 GihHub 访问">
-          <el-switch v-model="isGithubChecked" :active-icon="Check" :inactive-icon="Close" inline-prompt
-            @change="githubSwitchChange" />
-        </el-form-item>
-        <el-form-item v-if="isGithubChecked" label="GitHub 主页访问地址">
-          <el-input v-model="form.githubHomepage" clearable placeholder="请输入 GitHub 主页访问的 URL" />
-        </el-form-item>
+  <div class="p-6">
+    <!-- 顶栏：标题和保存按钮 -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-xl font-bold text-gray-800">博客设置</h2>
+        <p class="text-sm text-gray-500 mt-1">管理您的博客基本信息及个性化配置</p>
+      </div>
+      <el-button :loading="btnLoading" icon="Check" size="large" type="primary" @click="onSubmit">保存更改</el-button>
+    </div>
 
-        <!-- 开启 Gitee 访问 -->
-        <el-form-item label="开启 Gitee 访问">
-          <el-switch v-model="isGiteeChecked" :active-icon="Check" :inactive-icon="Close" inline-prompt
-            @change="giteeSwitchChange" />
-        </el-form-item>
-        <el-form-item v-if="isGiteeChecked" label="Gitee 主页访问地址">
-          <el-input v-model="form.giteeHomepage" clearable placeholder="请输入 Gitee 主页访问的 URL" />
-        </el-form-item>
+    <el-form ref="formRef" :model="form" :rules="rules" class="w-full" label-position="top">
+      <el-row :gutter="24">
+        <!-- 左侧：基础信息 -->
+        <el-col :lg="16" :span="24">
+          <el-card class="border-0 !bg-white !rounded-xl mb-6" shadow="never">
+            <template #header>
+              <div class="font-bold text-gray-700 flex items-center gap-2">
+                <el-icon>
+                  <InfoFilled/>
+                </el-icon>
+                基础信息
+              </div>
+            </template>
 
-        <!-- 开启知乎访问 -->
-        <el-form-item label="开启知乎访问">
-          <el-switch v-model="isZhihuChecked" :active-icon="Check" :inactive-icon="Close" inline-prompt
-            @change="zhihuSwitchChange" />
-        </el-form-item>
-        <el-form-item v-if="isZhihuChecked" label="知乎主页访问地址">
-          <el-input v-model="form.zhihuHomepage" clearable placeholder="请输入知乎主页访问的 URL" />
-        </el-form-item>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <el-form-item label="博客名称" prop="name">
+                <el-input v-model="form.name" clearable placeholder="请输入博客名称" size="large"/>
+              </el-form-item>
+              <el-form-item label="作者名" prop="author">
+                <el-input v-model="form.author" clearable placeholder="请输入作者昵称" size="large"/>
+              </el-form-item>
+            </div>
 
-        <!-- 开启 CSDN 访问 -->
-        <el-form-item label="开启 CSDN 访问">
-          <el-switch v-model="isCSDNChecked" :active-icon="Check" :inactive-icon="Close" inline-prompt
-            @change="csdnSwitchChange" />
-        </el-form-item>
-        <el-form-item v-if="isCSDNChecked" label="CSDN 主页访问地址">
-          <el-input v-model="form.csdnHomepage" clearable placeholder="请输入 CSDN 主页访问的 URL" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" :loading="btnLoading" @click="onSubmit">保存</el-button>
-        </el-form-item>
+            <el-form-item label="介绍语" prop="introduction">
+              <el-input
+                  v-model="form.introduction"
+                  :rows="4"
+                  maxlength="200"
+                  placeholder="一句话介绍你自己..."
+                  show-word-limit
+                  type="textarea"
+              />
+            </el-form-item>
 
-      </el-form>
-    </el-card>
+            <el-divider content-position="left">图片设置</el-divider>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+              <!-- 博客 LOGO -->
+              <el-form-item label="博客 LOGO" prop="logo">
+                <div class="w-full flex items-start gap-4">
+                  <el-upload
+                      :auto-upload="false"
+                      :on-change="handleLogoChange"
+                      :show-file-list="false"
+                      accept="image/*"
+                      action="#"
+                      class="avatar-uploader-custom"
+                  >
+                    <div v-if="form.logo"
+                         class="relative group w-32 h-32 rounded-xl overflow-hidden border border-gray-200 cursor-pointer shadow-sm">
+                      <img :src="form.logo" alt="Logo" class="w-full h-full object-cover"/>
+                      <div
+                          class="absolute inset-0 bg-black/50 hidden group-hover:flex flex-col items-center justify-center text-white transition-all">
+                        <el-icon class="text-2xl mb-1">
+                          <Edit/>
+                        </el-icon>
+                        <span class="text-xs">更换图片</span>
+                      </div>
+                    </div>
+                    <div v-else
+                         class="w-32 h-32 rounded-xl border-2 border-dashed border-gray-300 hover:border-sky-500 flex flex-col items-center justify-center text-gray-400 hover:text-sky-500 transition-colors bg-gray-50 cursor-pointer">
+                      <el-icon class="text-2xl mb-2">
+                        <Plus/>
+                      </el-icon>
+                      <span class="text-xs">上传 Logo</span>
+                    </div>
+                  </el-upload>
+                  <div class="text-xs text-gray-400 leading-relaxed mt-1">
+                    <p>支持 JPG, PNG, GIF 格式</p>
+                    <p>建议尺寸：200 x 200 像素</p>
+                    <p>将用于网站头部和浏览器标签页</p>
+                  </div>
+                </div>
+              </el-form-item>
+
+              <!-- 作者头像 -->
+              <el-form-item label="作者头像" prop="avatar">
+                <div class="w-full flex items-start gap-4">
+                  <el-upload
+                      :auto-upload="false"
+                      :on-change="handleAvatarChange"
+                      :show-file-list="false"
+                      accept="image/*"
+                      action="#"
+                      class="avatar-uploader-custom"
+                  >
+                    <div v-if="form.avatar"
+                         class="relative group w-32 h-32 rounded-full overflow-hidden border border-gray-200 cursor-pointer shadow-sm">
+                      <img :src="form.avatar" alt="Avatar" class="w-full h-full object-cover"/>
+                      <div
+                          class="absolute inset-0 bg-black/50 hidden group-hover:flex flex-col items-center justify-center text-white transition-all">
+                        <el-icon class="text-2xl mb-1">
+                          <Edit/>
+                        </el-icon>
+                        <span class="text-xs">更换头像</span>
+                      </div>
+                    </div>
+                    <div v-else
+                         class="w-32 h-32 rounded-full border-2 border-dashed border-gray-300 hover:border-sky-500 flex flex-col items-center justify-center text-gray-400 hover:text-sky-500 transition-colors bg-gray-50 cursor-pointer">
+                      <el-icon class="text-2xl mb-2">
+                        <Plus/>
+                      </el-icon>
+                      <span class="text-xs">上传头像</span>
+                    </div>
+                  </el-upload>
+                  <div class="text-xs text-gray-400 leading-relaxed mt-1">
+                    <p>支持 JPG, PNG 格式</p>
+                    <p>建议使用正方形图片</p>
+                    <p>将展示在侧边栏和评论区</p>
+                  </div>
+                </div>
+              </el-form-item>
+            </div>
+          </el-card>
+        </el-col>
+
+        <!-- 右侧：社交信息 -->
+        <el-col :lg="8" :span="24">
+          <el-card class="border-0 !bg-white !rounded-xl sticky top-6" shadow="never">
+            <template #header>
+              <div class="font-bold text-gray-700 flex items-center gap-2">
+                <el-icon>
+                  <Share/>
+                </el-icon>
+                社交主页
+              </div>
+            </template>
+
+            <div class="space-y-4">
+              <!-- Github -->
+              <div
+                  class="p-4 bg-gray-50/50 rounded-xl border border-gray-100 hover:shadow-sm hover:border-sky-100 transition-all">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-white">
+                      <i class="fab fa-github text-lg"></i>
+                      <!-- 这里可以用 icon 或 svg，为了简单演示用文字首字母代替，实际项目中建议用 SVG -->
+                      <span class="font-bold text-xs">G</span>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-700">GitHub</span>
+                  </div>
+                  <el-switch v-model="isGithubChecked" style="--el-switch-on-color: #10b981;"
+                             @change="githubSwitchChange"/>
+                </div>
+                <transition name="el-zoom-in-top">
+                  <div v-if="isGithubChecked" class="mt-3">
+                    <el-input v-model="form.githubHomepage" clearable placeholder="https://github.com/username">
+                      <template #prefix>
+                        <el-icon class="text-gray-400">
+                          <Link/>
+                        </el-icon>
+                      </template>
+                    </el-input>
+                  </div>
+                </transition>
+              </div>
+
+              <!-- Gitee -->
+              <div
+                  class="p-4 bg-gray-50/50 rounded-xl border border-gray-100 hover:shadow-sm hover:border-red-100 transition-all">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white">
+                      <span class="font-bold text-xs">码</span>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-700">Gitee</span>
+                  </div>
+                  <el-switch v-model="isGiteeChecked" style="--el-switch-on-color: #10b981;"
+                             @change="giteeSwitchChange"/>
+                </div>
+                <transition name="el-zoom-in-top">
+                  <div v-if="isGiteeChecked" class="mt-3">
+                    <el-input v-model="form.giteeHomepage" clearable placeholder="https://gitee.com/username">
+                      <template #prefix>
+                        <el-icon class="text-gray-400">
+                          <Link/>
+                        </el-icon>
+                      </template>
+                    </el-input>
+                  </div>
+                </transition>
+              </div>
+
+              <!-- 知乎 -->
+              <div
+                  class="p-4 bg-gray-50/50 rounded-xl border border-gray-100 hover:shadow-sm hover:border-blue-100 transition-all">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                      <span class="font-bold text-xs">知</span>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-700">知乎</span>
+                  </div>
+                  <el-switch v-model="isZhihuChecked" style="--el-switch-on-color: #10b981;"
+                             @change="zhihuSwitchChange"/>
+                </div>
+                <transition name="el-zoom-in-top">
+                  <div v-if="isZhihuChecked" class="mt-3">
+                    <el-input v-model="form.zhihuHomepage" clearable placeholder="主页链接">
+                      <template #prefix>
+                        <el-icon class="text-gray-400">
+                          <Link/>
+                        </el-icon>
+                      </template>
+                    </el-input>
+                  </div>
+                </transition>
+              </div>
+
+              <!-- CSDN -->
+              <div
+                  class="p-4 bg-gray-50/50 rounded-xl border border-gray-100 hover:shadow-sm hover:border-orange-100 transition-all">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center text-white">
+                      <span class="font-bold text-xs">C</span>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-700">CSDN</span>
+                  </div>
+                  <el-switch v-model="isCSDNChecked" style="--el-switch-on-color: #10b981;" @change="csdnSwitchChange"/>
+                </div>
+                <transition name="el-zoom-in-top">
+                  <div v-if="isCSDNChecked" class="mt-3">
+                    <el-input v-model="form.csdnHomepage" clearable placeholder="主页链接">
+                      <template #prefix>
+                        <el-icon class="text-gray-400">
+                          <Link/>
+                        </el-icon>
+                      </template>
+                    </el-input>
+                  </div>
+                </transition>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </el-form>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
-import {Check, Close, Plus} from '@element-plus/icons-vue'
-import { getBlogSettingsDetail, updateBlogSettings } from '@/api/admin/blogsettings'
-import { uploadFile } from '@/api/admin/file'
-import { showMessage } from '@/composables/utils'
+import {reactive, ref} from 'vue'
+import {Edit, InfoFilled, Link, Plus, Share} from '@element-plus/icons-vue'
+import {getBlogSettingsDetail, updateBlogSettings} from '@/api/admin/blogsettings'
+import {uploadFile} from '@/api/admin/file'
+import {showMessage} from '@/composables/utils'
 
 // 表单对象
 const form = reactive({
@@ -111,11 +287,11 @@ const formRef = ref(null)
 
 // 规则校验
 const rules = {
-  name: [{ required: true, message: '请输入博客名称', trigger: 'blur' }],
-  author: [{ required: true, message: '请输入作者名', trigger: 'blur' }],
-  logo: [{ required: true, message: '请上传博客 LOGO', trigger: 'blur' }],
-  avatar: [{ required: true, message: '请上传作者头像', trigger: 'blur' }],
-  introduction: [{ required: true, message: '请输入介绍语', trigger: 'blur' }],
+  name: [{required: true, message: '请输入博客名称', trigger: 'blur'}],
+  author: [{required: true, message: '请输入作者名', trigger: 'blur'}],
+  logo: [{required: true, message: '请上传博客 LOGO', trigger: 'change'}],
+  avatar: [{required: true, message: '请上传作者头像', trigger: 'change'}],
+  introduction: [{required: true, message: '请输入介绍语', trigger: 'blur'}],
 }
 
 // 监听 Github Switch 改变事件
@@ -255,44 +431,24 @@ const onSubmit = () => {
 
 
 <style scoped>
-.avatar-uploader .avatar {
-  width: 100px;
-  height: 100px;
+/* 解决 textarea :focus 状态下，边框消失的问题 */
+:deep(.el-textarea__inner:focus) {
+  outline: 0 !important;
+  box-shadow: 0 0 0 1px var(--el-color-primary) inset !important;
+}
+
+/* 覆盖 el-upload 默认样式，使其适应自定义容器 */
+:deep(.el-upload) {
+  width: 100%;
+  height: 100%;
   display: block;
 }
-</style>
 
-<style>
-/* 解决 textarea :focus 状态下，边框消失的问题 */
-.el-textarea__inner:focus {
-  outline: 0 !important;
-  box-shadow: 0 0 0 1px var(--el-input-focus-border-color) inset !important;
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 100px;
-  height: 100px;
-  text-align: center;
-}
-
-/* 解决 textarea :focus 状态下，边框消失的问题 */
-.el-textarea__inner:focus {
-  outline: 0 !important;
-  box-shadow: 0 0 0 1px var(--el-input-focus-border-color) inset !important;
+/* 去除默认边框，由外层 div 控制 */
+:deep(.el-upload-dragger) {
+  border: none;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>
