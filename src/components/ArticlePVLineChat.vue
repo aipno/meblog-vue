@@ -6,14 +6,14 @@
 
 <script setup>
 import * as echarts from 'echarts'
-import {onBeforeUnmount, onMounted, ref, watch} from 'vue'
-import {useDark, useResizeObserver} from '@vueuse/core'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useDark, useResizeObserver } from '@vueuse/core'
 
 // 对外暴露的属性值
 const props = defineProps({
   value: { // 属性值名称
     type: Object, // 类型为对象
-    default: () => ({pvDates: [], pvCounts: []})
+    default: () => ({ pvDates: [], pvCounts: [] })
   }
 })
 
@@ -34,7 +34,7 @@ function initLineChat() {
   if (!chartContainer.value) return
 
   if (!myChart) {
-    myChart = echarts.init(chartContainer.value, null, {renderer: 'svg'});
+    myChart = echarts.init(chartContainer.value, null, { renderer: 'svg' });
   }
 
   // 从 props.value 中获取日期集合和 pv 访问量集合
@@ -139,8 +139,8 @@ function initLineChat() {
         },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            {offset: 0, color: 'rgba(99, 102, 241, 0.4)'}, // 顶部颜色
-            {offset: 1, color: 'rgba(99, 102, 241, 0.01)'} // 底部透明
+            { offset: 0, color: 'rgba(99, 102, 241, 0.4)' }, // 顶部颜色
+            { offset: 1, color: 'rgba(99, 102, 241, 0.01)' } // 底部透明
           ])
         }
       }
@@ -151,7 +151,7 @@ function initLineChat() {
 }
 
 // 监听数据变化
-watch(() => props.value, () => initLineChat(), {deep: true})
+watch(() => props.value, () => initLineChat(), { deep: true })
 
 // 监听暗黑模式变化，重绘图表
 watch(isDark, () => {
@@ -173,5 +173,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

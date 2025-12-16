@@ -1,19 +1,17 @@
 <template>
-  <div v-if="titles && titles.length > 0"
-       :class="[currScrollY > 0 ? 'top-4' : 'top-[5.5rem]']"
-       class="fixed right-[max(0px,calc(45%-48rem))] w-[19rem] transition-all duration-300 z-10 hidden xl:block">
+  <div v-if="titles && titles.length > 0" :class="[currScrollY > 0 ? 'top-4' : 'top-[5.5rem]']"
+    class="fixed right-[max(0px,calc(45%-48rem))] w-[19rem] transition-all duration-300 z-10">
 
     <div
-        class="bg-white border border-gray-100 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
+      class="bg-white border border-gray-100 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
       <!-- 目录标题 -->
       <div class="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
         <h2 class="flex items-center text-sm font-bold text-gray-700 uppercase dark:text-gray-200">
           <!-- 目录图标 -->
-          <svg class="inline icon w-4 h-4 mr-2 text-sky-500" viewBox="0 0 1024 1024"
-               xmlns="http://www.w3.org/2000/svg">
+          <svg class="inline icon w-4 h-4 mr-2 text-sky-500" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
             <path
-                d="M857.6 25.6a76.8 76.8 0 0 1 76.8 76.8v819.2a76.8 76.8 0 0 1-76.8 76.8H166.4a76.8 76.8 0 0 1-76.8-76.8V102.4a76.8 76.8 0 0 1 76.8-76.8h691.2z m-102.4 678.4H473.6l-2.2528 0.064a38.4 38.4 0 0 0 0 76.672L473.6 780.8h281.6l2.2528-0.064a38.4 38.4 0 0 0 0-76.672L755.2 704z m0-230.4H473.6l-2.2528 0.064a38.4 38.4 0 0 0 0 76.672L473.6 550.4h281.6l2.2528-0.064a38.4 38.4 0 0 0 0-76.672L755.2 473.6z m0-230.4H473.6l-2.2528 0.064a38.4 38.4 0 0 0 0 76.672L473.6 320h281.6l2.2528-0.064a38.4 38.4 0 0 0 0-76.672L755.2 243.2z"
-                fill="currentColor"></path>
+              d="M857.6 25.6a76.8 76.8 0 0 1 76.8 76.8v819.2a76.8 76.8 0 0 1-76.8 76.8H166.4a76.8 76.8 0 0 1-76.8-76.8V102.4a76.8 76.8 0 0 1 76.8-76.8h691.2z m-102.4 678.4H473.6l-2.2528 0.064a38.4 38.4 0 0 0 0 76.672L473.6 780.8h281.6l2.2528-0.064a38.4 38.4 0 0 0 0-76.672L755.2 704z m0-230.4H473.6l-2.2528 0.064a38.4 38.4 0 0 0 0 76.672L473.6 550.4h281.6l2.2528-0.064a38.4 38.4 0 0 0 0-76.672L755.2 473.6z m0-230.4H473.6l-2.2528 0.064a38.4 38.4 0 0 0 0 76.672L473.6 320h281.6l2.2528-0.064a38.4 38.4 0 0 0 0-76.672L755.2 243.2z"
+              fill="currentColor"></path>
           </svg>
           本文目录
         </h2>
@@ -24,15 +22,13 @@
         <ul class="toc space-y-0.5">
           <!-- 一级标题 (h2) -->
           <li v-for="(h2, index) in titles" :key="index">
-            <div
-                :class="[
-                h2.index === activeHeadingIndex
-                  ? 'text-sky-600 bg-sky-50 font-medium dark:bg-sky-900/20 dark:text-sky-400'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700/50 dark:hover:text-gray-200'
-              ]"
-                :title="h2.text"
-                class="px-3 py-1.5 text-sm rounded-md cursor-pointer transition-colors duration-200 select-none truncate block"
-                @click="scrollToView(h2.offsetTop)">
+            <div :class="[
+              h2.index === activeHeadingIndex
+                ? 'text-sky-600 bg-sky-50 font-medium dark:bg-sky-900/20 dark:text-sky-400'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700/50 dark:hover:text-gray-200'
+            ]" :title="h2.text"
+              class="px-3 py-1.5 text-sm rounded-md cursor-pointer transition-colors duration-200 select-none truncate block"
+              @click="scrollToView(h2.offsetTop)">
               {{ h2.text }}
             </div>
 
@@ -40,15 +36,13 @@
             <template v-if="h2.children && h2.children.length > 0">
               <ul class="mt-0.5 space-y-0.5 border-l border-gray-100 dark:border-gray-700 ml-3 pl-1">
                 <li v-for="(child, childIndex) in h2.children" :key="childIndex">
-                  <div
-                      :class="[
-                      child.index === activeHeadingIndex
-                        ? 'text-sky-600 bg-sky-50 font-medium dark:bg-sky-900/20 dark:text-sky-400 border-l-2 border-sky-500 -ml-[5px] pl-[13px]'
-                        : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-500 dark:hover:bg-gray-700/50 dark:hover:text-gray-300'
-                    ]"
-                      :title="child.text"
-                      class="px-3 py-1.5 text-xs rounded-md cursor-pointer transition-all duration-200 select-none truncate block"
-                      @click="scrollToView(child.offsetTop)">
+                  <div :class="[
+                    child.index === activeHeadingIndex
+                      ? 'text-sky-600 bg-sky-50 font-medium dark:bg-sky-900/20 dark:text-sky-400 border-l-2 border-sky-500 -ml-[5px] pl-[13px]'
+                      : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-500 dark:hover:bg-gray-700/50 dark:hover:text-gray-300'
+                  ]" :title="child.text"
+                    class="px-3 py-1.5 text-xs rounded-md cursor-pointer transition-all duration-200 select-none truncate block"
+                    @click="scrollToView(child.offsetTop)">
                     {{ child.text }}
                   </div>
 
@@ -56,15 +50,13 @@
                   <template v-if="child.children && child.children.length > 0">
                     <ul class="mt-0.5 space-y-0.5 border-l border-gray-100 dark:border-gray-700 ml-3 pl-1">
                       <li v-for="(grandChild, grandChildIndex) in child.children" :key="grandChildIndex">
-                        <div
-                            :class="[
-                              grandChild.index === activeHeadingIndex
-                                ? 'text-sky-600 bg-sky-50 font-medium dark:bg-sky-900/20 dark:text-sky-400 border-l-2 border-sky-500 -ml-[5px] pl-[13px]'
-                                : 'text-gray-400 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-500 dark:hover:bg-gray-700/50 dark:hover:text-gray-300'
-                            ]"
-                            :title="grandChild.text"
-                            class="px-3 py-1.5 text-xs rounded-md cursor-pointer transition-all duration-200 select-none truncate block"
-                            @click="scrollToView(grandChild.offsetTop)">
+                        <div :class="[
+                          grandChild.index === activeHeadingIndex
+                            ? 'text-sky-600 bg-sky-50 font-medium dark:bg-sky-900/20 dark:text-sky-400 border-l-2 border-sky-500 -ml-[5px] pl-[13px]'
+                            : 'text-gray-400 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-500 dark:hover:bg-gray-700/50 dark:hover:text-gray-300'
+                        ]" :title="grandChild.text"
+                          class="px-3 py-1.5 text-xs rounded-md cursor-pointer transition-all duration-200 select-none truncate block"
+                          @click="scrollToView(grandChild.offsetTop)">
                           {{ grandChild.text }}
                         </div>
                       </li>
@@ -81,46 +73,61 @@
 </template>
 
 <script setup>
-import {onBeforeUnmount, onMounted, ref} from 'vue'
-import {useDark} from '@vueuse/core'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { useDark } from '@vueuse/core'
 
 // 是否是暗黑模式
 const isDark = useDark()
 
 // 响应式的目录数据
 const titles = ref([])
+let observer
+let initIntervalId
 onMounted(() => {
-  // 通过 .article-content 样式来获取父级 div
-  const container = document.querySelector('.article-content')
+  const bind = () => {
+    const container = document.querySelector('.article-content')
+    if (!container) return false
 
-  // 使用 MutationObserver 监视 DOM 的变化
-  const observer = new MutationObserver(mutationsList => {
-    for (let mutation of mutationsList) {
-      if (mutation.type === 'childList') {
-        // 先清空目录缓存数据
-        titles.value = []
-        // 计算目录数据
-        initTocData(container)
+    observer = new MutationObserver(mutationsList => {
+      for (let mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+          titles.value = []
+          initTocData(container)
 
-        // 监听所有图片的加载事件
-        const images = container.querySelectorAll('img');
-        images.forEach(img => {
-          img.addEventListener('load', () => {
-            // 图片加载完成后重新计算标题的 offsetTop
-            initTocData(container)
+          const images = container.querySelectorAll('img');
+          images.forEach(img => {
+            img.addEventListener('load', () => {
+              initTocData(container)
+            })
           })
-        })
 
-        // 添加滚动事件监听
-        window.addEventListener('scroll', handleContentScroll);
+          window.addEventListener('scroll', handleContentScroll);
+        }
       }
-    }
-  })
+    })
 
-  // 配置监视子节点的变化
-  const config = {childList: true, subtree: true}
-  // 开始观察正文 div 的内容变化
-  observer.observe(container, config)
+    const config = { childList: true, subtree: true }
+    observer.observe(container, config)
+    titles.value = []
+    initTocData(container)
+    const images = container.querySelectorAll('img')
+    images.forEach(img => {
+      img.addEventListener('load', () => {
+        initTocData(container)
+      })
+    })
+    window.addEventListener('scroll', handleContentScroll)
+    return true
+  }
+
+  if (!bind()) {
+    initIntervalId = setInterval(() => {
+      if (bind()) {
+        clearInterval(initIntervalId)
+        initIntervalId = null
+      }
+    }, 200)
+  }
 })
 
 // 记录当前被选中的标题下标
@@ -154,13 +161,16 @@ function handleContentScroll() {
   checkTitles(titles.value)
 }
 
-// 移除滚动监听
-onBeforeUnmount(() => window.removeEventListener('scroll', handleContentScroll))
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleContentScroll)
+  if (observer) observer.disconnect()
+  if (initIntervalId) clearInterval(initIntervalId)
+})
 
 // 滚动到指定的位置
 function scrollToView(offsetTop) {
   // 增加偏移量，避免标题被 Header 遮挡
-  window.scrollTo({top: offsetTop + 80, behavior: "smooth"});
+  window.scrollTo({ top: offsetTop + 80, behavior: "smooth" });
 }
 
 // 初始化标题数据

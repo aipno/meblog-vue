@@ -1,5 +1,11 @@
 import axios from "@/axios";
 
+
+// 获取标签列表数据
+export function getTagList() {
+    return axios.post("/admin/tag/all")
+}
+
 // 获取标签分页数据
 export function getTagPageList(data) {
     return axios.post("/admin/tag/list", data)
@@ -8,6 +14,10 @@ export function getTagPageList(data) {
 // 添加标签
 export function addTag(data) {
     return axios.post("/admin/tag/add", data)
+}
+
+export function updateTag(form) {
+    return axios.post("/admin/tag/update", form)
 }
 
 // 删除标签

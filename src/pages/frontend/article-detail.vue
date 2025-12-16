@@ -124,24 +124,24 @@
         </div>
 
         <!-- 上下篇导航 (预留样式，逻辑接入请参考Wiki) -->
-        <nav v-if="preNext" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-          <div v-if="preNext.preArticle"
+        <nav v-if="article" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+          <div v-if="article.preArticle"
                class="group p-5 bg-white border border-gray-100 rounded-xl cursor-pointer hover:shadow-md hover:border-sky-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-gray-600 transition-all"
-               @click="goArticleDetailPage(preNext.preArticle.articleId)">
+               @click="goArticleDetailPage(article.preArticle.articleId)">
             <div class="text-xs text-gray-400 mb-1 group-hover:text-sky-600 transition-colors">上一篇</div>
             <div class="text-gray-700 dark:text-gray-200 font-medium truncate">{{
-                preNext.preArticle.articleTitle
+                article.preArticle.articleTitle
               }}
             </div>
           </div>
           <div v-else class="hidden md:block"></div> <!-- 占位 -->
 
-          <div v-if="preNext.nextArticle"
+          <div v-if="article.nextArticle"
                class="group p-5 bg-white border border-gray-100 rounded-xl cursor-pointer hover:shadow-md hover:border-sky-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-gray-600 transition-all text-right"
-               @click="goArticleDetailPage(preNext.nextArticle.articleId)">
+               @click="goArticleDetailPage(article.nextArticle.articleId)">
             <div class="text-xs text-gray-400 mb-1 group-hover:text-sky-600 transition-colors">下一篇</div>
             <div class="text-gray-700 dark:text-gray-200 font-medium truncate">{{
-                preNext.nextArticle.articleTitle
+                article.nextArticle.articleTitle
               }}
             </div>
           </div>
@@ -204,7 +204,6 @@ const router = useRouter()
 const article = ref({})
 const success = ref(false)
 const articlePermission = ref(false)
-const preNext = ref(null) // 预留上下篇数据
 
 // 获取文章详情
 function refreshArticleDetail(articleId) {
@@ -238,6 +237,11 @@ function refreshArticleDetail(articleId) {
       addCopyButtons()
     })
   })
+}
+
+// 新增：跳转到文章详情页
+const goArticleDetailPage = (articleId) => {
+  router.push(`/article/${articleId}`)
 }
 
 // 动态添加代码复制按钮

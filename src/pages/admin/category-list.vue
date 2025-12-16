@@ -1,41 +1,34 @@
 <template>
   <div class="p-6">
     <!-- 顶部操作栏 -->
-    <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
-      <!-- 左侧搜索区 -->
-      <div class="flex items-center gap-3 flex-wrap">
-        <div class="w-64">
-          <el-input
-              v-model="searchCategoryName"
-              clearable
-              placeholder="请输入分类名称"
-              prefix-icon="Search"
-              @keyup.enter="getTableData"
-          />
-        </div>
+    <SearchBar @reset="reset" @search="getTableData">
+      <template #search-input>
+        <el-input
+            v-model="searchCategoryName"
+            clearable
+            placeholder="请输入分类名称"
+            prefix-icon="Search"
+            @keyup.enter="getTableData"
+        />
+      </template>
 
-        <div class="w-80">
-          <el-date-picker
-              v-model="pickDate"
-              :shortcuts="shortcuts"
-              end-placeholder="结束时间"
-              range-separator="-"
-              start-placeholder="开始时间"
-              type="daterange"
-              value-format="YYYY-MM-DD"
-              @change="datepickerChange"
-          />
-        </div>
+      <template #date-picker>
+        <el-date-picker
+            v-model="pickDate"
+            :shortcuts="shortcuts"
+            end-placeholder="结束时间"
+            range-separator="-"
+            start-placeholder="开始时间"
+            type="daterange"
+            value-format="YYYY-MM-DD"
+            @change="datepickerChange"
+        />
+      </template>
 
-        <el-button icon="Search" plain type="primary" @click="getTableData">搜索</el-button>
-        <el-button icon="RefreshRight" @click="reset">重置</el-button>
-      </div>
-
-      <!-- 右侧操作区 -->
-      <div>
+      <template #actions>
         <el-button icon="Plus" type="primary" @click="addCategoryBtnClick">新增分类</el-button>
-      </div>
-    </div>
+      </template>
+    </SearchBar>
 
     <!-- 表格区域 -->
     <el-card class="border-0 !bg-white !rounded-xl table-wrapper" shadow="never">
@@ -127,6 +120,7 @@ import {reactive, ref} from 'vue';
 import moment from "moment";
 import {showMessage} from '@/composables/utils'
 import FormDialog from "@/components/FormDialog.vue"
+import SearchBar from "@/components/SearchBar.vue";
 
 // 分页查询的分类名称
 const searchCategoryName = ref('')

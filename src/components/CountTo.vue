@@ -4,13 +4,13 @@
   <span :class="['tabular-nums', customClass]">
     {{ formattedValue }}
     <slot name="suffix">
-        <span v-if="suffix" class="ml-1 text-sm font-normal opacity-70">{{ suffix }}</span>
+      <span v-if="suffix" class="ml-1 text-sm font-normal opacity-70">{{ suffix }}</span>
     </slot>
   </span>
 </template>
 
 <script setup>
-import {computed, onMounted, reactive, watch} from 'vue'
+import { computed, onMounted, reactive, watch } from 'vue'
 import gsap from 'gsap'
 
 // 对外暴露的属性值

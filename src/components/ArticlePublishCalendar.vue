@@ -6,9 +6,9 @@
 
 <script setup>
 import * as echarts from 'echarts'
-import {onBeforeUnmount, onMounted, ref, watch} from 'vue'
-import {format, subMonths} from 'date-fns'
-import {useDark, useResizeObserver} from '@vueuse/core'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { format, subMonths } from 'date-fns'
+import { useDark, useResizeObserver } from '@vueuse/core'
 
 // 对外暴露的属性值
 const props = defineProps({
@@ -36,7 +36,7 @@ function initCalendar() {
 
   // 如果为了适配暗黑模式切换，建议销毁重建或使用 setOption 更新配置
   if (!myChart) {
-    myChart = echarts.init(chartContainer.value, null, {renderer: 'svg'});
+    myChart = echarts.init(chartContainer.value, null, { renderer: 'svg' });
   }
 
   // 当前日期
@@ -105,11 +105,11 @@ function initCalendar() {
         fontSize: 12
       },
       pieces: [
-        {min: 4, label: 'More', color: currentColors[4]},
-        {min: 3, max: 3, label: '', color: currentColors[3]},
-        {min: 2, max: 2, label: '', color: currentColors[2]},
-        {min: 1, max: 1, label: 'Less', color: currentColors[1]},
-        {max: 0, label: '', color: currentColors[0]}
+        { min: 4, label: 'More', color: currentColors[4] },
+        { min: 3, max: 3, label: '', color: currentColors[3] },
+        { min: 2, max: 2, label: '', color: currentColors[2] },
+        { min: 1, max: 1, label: 'Less', color: currentColors[1] },
+        { max: 0, label: '', color: currentColors[0] }
       ]
     },
     calendar: {
@@ -124,8 +124,8 @@ function initCalendar() {
         borderWidth: 3,
         borderRadius: 2 // 小圆角
       },
-      splitLine: {show: false},
-      yearLabel: {show: false},
+      splitLine: { show: false },
+      yearLabel: { show: false },
       monthLabel: {
         nameMap: 'cn',
         color: textColor,
@@ -175,5 +175,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
